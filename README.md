@@ -30,3 +30,12 @@ You can try the live demo of the project here: [Player Status Window](https://At
 3. Click "Hunt for XP" to gain experience points.
 4. Level up as you gather XP and improve your stats and skills.
 5. Keep playing to see how strong your character can get!
+
+## Quick Links
+
+- [Credits](#credits)
+- [License](#license)
+
+## License
+
+MIT License
