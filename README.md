@@ -33,7 +33,6 @@ You can try the live demo of the project here: [Player Status Window](https://At
 
 ## Quick Links
 
-- [Credits](#credits)
 - [License](#license)
 
 ## License
