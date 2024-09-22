@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stats Leveling</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Orbitron', fantasy, sans-serif;
+            background-color: #0d0d0d;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            color: #00FFFF;
+            font-size: 36px;
+            text-shadow: 2px 2px 5px rgba(0, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(0, 20, 60, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            position: relative;
+            border: 2px solid rgba(0, 255, 255, 0.8);
+        }
+        
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: rgba(0, 0, 50, 0.8);
+            color: #00FFFF;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+            outline: none;
+        }
+        
+        button {
+            background-color: rgba(0, 150, 255, 0.8);
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: rgba(0, 100, 255, 1);
+        }
+        
+        .stats {
+            margin-top: 20px;
+            background-color: rgba(0, 20, 60, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+        }
+        
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, #00FFFF, #0044FF, #00FFFF);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+        }
+        
+        .skill {
+            margin: 5px 0;
+        }
+        
+        .notification {
+            padding: 10px;
+            background-color: #444;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .popup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #FFD700;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            z-index: 1000;
+            animation: popupAnimation 0.5s ease-in-out;
+        }
+        
+        @keyframes popupAnimation {
+            from { opacity: 0; transform: translate(-50%, -50px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        
+        .xp-bar {
+            background-color: #555;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 20px;
+            margin-top: 10px;
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        }
+        
+        .xp-fill {
+            background: linear-gradient(90deg, #00FFFF, #0044FF);
+            width: 50%;
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .rank-box {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #FF0000;
+            color: white;
+            font-weight: bold;
+            margin: 10px 0;
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.6);
+        }
+        
+        .gender-selection {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+        
+        .gender-selection label {
+            display: flex;
+            align-items: center;
+        }
+        
+        .gender-selection input[type="radio"] {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Player Status Window</h1>
+    <div id="name-container">
+        <input type="text" id="name-input" placeholder="Enter your name">
+        <div class="gender-selection">
+            <label>
+                <input type="radio" name="gender" value="Male" checked> Male
+            </label>
+            <label>
+                <input type="radio" name="gender" value="Female"> Female
+            </label>
+        </div>
+        <button onclick="generateStats()">Start</button>
+    </div>
+    
+    <div id="stats-container" class="stats" style="display:none;">
+        <h2>Status for <span id="character-name"></span></h2>
+        <p>Gender: <span id="character-gender"></span></p>
+        <p>Title: <span id="character-title"></span></p>
+        <p>Class: <span id="character-class"></span></p>
+        <p>Level: <span id="character-level">1</span></p>
+        <div class="xp-bar">
+            <div class="xp-fill" id="xp-fill"></div>
+        </div>
+        <p>XP: <span id="character-xp">0</span> / <span id="xp-limit">100</span></p>
+        <p>Strength: <span id="strength"></span></p>
+        <p>Agility: <span id="agility"></span></p>
+        <p>Intelligence: <span id="intelligence"></span></p>
+        <p>Endurance: <span id="endurance"></span></p>
+        <p>Rank: <span id="character-rank" class="rank-box">E</span></p>
+        <div id="skills-container">
+            <h3>Skills</h3>
+            <div id="skills-list"></div>
+        </div>
+        <button onclick="hunt()">Hunt for XP</button>
+    </div>
+    
+    <div id="notification-container"></div>
+</div>
+
+<script>
+    const titles = ["Shadow Hunter", "Mage Slayer", "Warrior of Light", "Frost King", "Thunder Lord"];
+    const classes = ["Assassin", "Warrior", "Mage", "Ranger", "Paladin"];
+    const skills = [
+        { name: "Shadow Strike", description: "Serangan cepat dari bayangan.", maxLevel: 5, level: 1 },
+        { name: "Fireball", description: "Bola api yang melahap musuh.", maxLevel: 5, level: 1 },
+        { name: "Stealth", description: "Menghilang dari pandangan musuh.", maxLevel: 5, level: 1 },
+        { name: "Berserk", description: "Meningkatkan kekuatan secara drastis.", maxLevel: 5, level: 1 },
+        { name: "Heal", description: "Menyembuhkan luka-luka.", maxLevel: 5, level: 1 },
+        { name: "Frost Armor", description: "Meningkatkan pertahanan dengan lapisan es.", maxLevel: 5, level: 1 },
+        { name: "Lightning Bolt", description: "Serangan petir yang menghancurkan musuh.", maxLevel: 5, level: 1 },
+        { name: "Teleport", description: "Berpindah tempat secara instan.", maxLevel: 5, level: 1 },
+        { name: "Mind Control", description: "Mengendalikan pikiran musuh.", maxLevel: 5, level: 1 },
+        { name: "Summon Elemental", description: "Memanggil makhluk elemental.", maxLevel: 5, level: 1 },
+        { name: "Invisibility", description: "Menjadi tak terlihat.", maxLevel: 5, level: 1 },
+        { name: "Time Warp", description: "Memanipulasi waktu.", maxLevel: 5, level: 1 }
+    ];
+    
+    let currentSkills = [];
+    let currentXP = 0;
+    let currentLevel = 1;
+    let xpLimit = 100;
+    let strength = 10;
+    let agility = 10;
+    let intelligence = 10;
+    let endurance = 10;
+    
+    const usedNames = [];
+    
+    function generateStats() {
+        const name = document.getElementById('name-input').value.trim();
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+        
+        if (!name) {
+            showPopup("Please enter a name.");
+            return;
+        }
+        
+        if (usedNames.includes(name)) {
+            showPopup("This name is already taken. Please choose a different name.");
+            return;
+        }
+        
+        usedNames.push(name);
+        
+        document.getElementById('character-name').innerText = name;
+        document.getElementById('character-gender').innerText = gender;
+        document.getElementById('character-title').innerText = getRandomElement(titles);
+        document.getElementById('character-class').innerText = getRandomElement(classes);
+        
+        strength += Math.floor(Math.random() * 5);
+        agility += Math.floor(Math.random() * 5);
+        intelligence += Math.floor(Math.random() * 5);
+        endurance += Math.floor(Math.random() * 5);
+        
+        document.getElementById('strength').innerText = strength;
+        document.getElementById('agility').innerText = agility;
+        document.getElementById('intelligence').innerText = intelligence;
+        document.getElementById('endurance').innerText = endurance;
+        
+        currentSkills = getRandomSkills(3);
+        updateSkillsDisplay();
+        
+        document.getElementById('name-container').style.display = 'none';
+        document.getElementById('stats-container').style.display = 'block';
+    }
+    
+    function getRandomElement(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+    
+    function getRandomSkills(count) {
+        const shuffled = [...skills].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, count);
+    }
+    
+    function updateSkillsDisplay() {
+        const skillsList = document.getElementById('skills-list');
+        skillsList.innerHTML = '';
+        currentSkills.forEach(skill => {
+            const skillElement = document.createElement('div');
+            skillElement.classList.add('skill');
+            skillElement.innerText = 
+                `${skill.name} (Level ${skill.level}/${skill.maxLevel}): ${skill.description}`;
+            skillsList.appendChild(skillElement);
+        });
+    }
+    
+    function hunt() {
+        const xpGain = Math.floor(Math.random() * 50) + 10;
+        currentXP += xpGain;
+        showNotification(`Gained ${xpGain} XP!`);
+        
+        while (currentXP >= xpLimit) {
+            levelUp();
+        }
+        
+        updateXPBar();
+    }
+    
+    function levelUp() {
+        currentLevel++;
+        document.getElementById('character-level').innerText = currentLevel;
+        
+        currentXP -= xpLimit;
+        xpLimit += 50;
+        
+        strength += Math.floor(Math.random() * 5) + 1;
+        agility += Math.floor(Math.random() * 5) + 1;
+        intelligence += Math.floor(Math.random() * 5) + 1;
+        endurance += Math.floor(Math.random() * 5) + 1;
+        
+        document.getElementById('strength').innerText = strength;
+        document.getElementById('agility').innerText = agility;
+        document.getElementById('intelligence').innerText = intelligence;
+        document.getElementById('endurance').innerText = endurance;
+        
+        const rank = getRank(currentLevel);
+        document.getElementById('character-rank').innerText = rank;
+        
+        upgradeRandomSkill();
+        updateSkillsDisplay();
+        
+        showPopup(`Level Up! Now Level ${currentLevel}`);
+    }
+    
+    function upgradeRandomSkill() {
+        const upgradableSkills = currentSkills.filter(skill => skill.level < skill.maxLevel);
+        if (upgradableSkills.length > 0) {
+            const skillToUpgrade = getRandomElement(upgradableSkills);
+            skillToUpgrade.level++;
+            showNotification(`Skill ${skillToUpgrade.name} upgraded to level ${skillToUpgrade.level}!`);
+        }
+    }
+    
+    function getRank(level) {
+        if (level >= 40) return 'SSS';
+        if (level >= 30) return 'SS';
+        if (level >= 20) return 'S';
+        if (level >= 15) return 'A';
+        if (level >= 10) return 'B';
+        if (level >= 5) return 'C';
+        return 'E';
+    }
+    
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.classList.add('notification');
+        notification.innerText = message;
+        document.getElementById('notification-container').appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+    
+    function updateXPBar() {
+        const xpFill = document.getElementById('xp-fill');
+        const xpPercent = (currentXP / xpLimit) * 100;
+        xpFill.style.width = `${xpPercent}%`;
+        
+        document.getElementById('character-xp').innerText = currentXP;
+        document.getElementById('xp-limit').innerText = xpLimit;
+        xpFill.style.backgroundColor = currentXP >= xpLimit ? 'gold' : '#00f';
+    }
+    
+    function showPopup(message) {
+        const popup = document.createElement('div');
+        popup.classList.add('popup');
+        popup.innerText = message;
+        document.body.appendChild(popup);
+        
+        setTimeout(() => {
+            popup.remove();
+        }, 3000);
+    }
+</script>
+
+</body>
+  </html>
