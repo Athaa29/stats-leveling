@@ -1,6 +1,4 @@
-# Player Status Window
-
-A simple web-based **Player Status Window** where users can generate random character stats, go on XP hunts, level up, and upgrade skills. The interface is designed for an immersive experience with an interactive character creation process.
+# Stats Leveling A simple web-based **Stats Leveling** where users can generate random character stats, go on XP hunts, level up, and upgrade skills. The interface is designed for an immersive experience with an interactive character creation process.
 
 ## Features
 
@@ -13,7 +11,7 @@ A simple web-based **Player Status Window** where users can generate random char
 
 ## Demo
 
-You can try the live demo of the project here: [Player Status Window](https://Athaa29.github.io/stats-leveling)
+You can try the live demo of the project here: [Stats Leveling](https://Athaa29.github.io/stats-leveling)
 
 ## Technologies Used
 
