@@ -1,4 +1,6 @@
-# Stats Leveling A simple web-based **Stats Leveling** where users can generate random character stats, go on XP hunts, level up, and upgrade skills. The interface is designed for an immersive experience with an interactive character creation process.
+# Stats Leveling 
+
+A simple web-based **Stats Leveling** where users can generate random character stats, go on XP hunts, level up, and upgrade skills. The interface is designed for an immersive experience with an interactive character creation process.
 
 ## Features
 
